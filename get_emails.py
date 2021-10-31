@@ -2,6 +2,8 @@ import email
 import imaplib
 import os
 
+from bs4 import BeautifulSoup as bs
+
 EMAIL = os.getenv("EMAIL")
 PASSWORD = os.getenv("PASSWORD")
 SERVER = os.getenv("SERVER")
@@ -35,8 +37,24 @@ def get_mail(client, query):
             body += part.get_payload()
         return mail_from, mail_subject, body
 
+def parse_body(body):
+    soup = bs(body, features="html.parser")
+    signals = {}
+    for paragraph in soup.find_all('p'):
+        ultag = paragraph.next_sibling
+        signals[paragraph.text] = []
+        for litag in ultag.find_all('li'):
+            crypto_label = litag.find('a')
+            signals[paragraph.text].append(crypto_label.text)
+    return signals
+
 if __name__ == "__main__":
-    query = '(SUBJECT "Trading signals of Top 12 Cryptocurrency (daily) for Thursday 21 October 2021")'
+    query = '(SUBJECT "Trading signals of Top 12 Cryptocurrency (daily) for Sunday 17 October 2021")'
+    # query = '(SUBJECT "Trading signals of Top 12 Cryptocurrency (daily) for Monday 18 October 2021")'
     mail = connect_inbox(EMAIL, PASSWORD, SERVER)
-    mail_from, mail_subject, message = get_all_mail(mail, query)
-    print(message)
+    mail_from, mail_subject, message = get_mail(mail, query)
+
+    
+    # print(message)
+    signals = parse_body(message)
+    print(signals)
