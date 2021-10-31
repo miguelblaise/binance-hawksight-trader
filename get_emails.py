@@ -4,13 +4,9 @@ import os
 
 from bs4 import BeautifulSoup as bs
 
-EMAIL = os.getenv("EMAIL")
-PASSWORD = os.getenv("PASSWORD")
-SERVER = os.getenv("SERVER")
-
 def connect_inbox(email, pw, server):
-    mail = imaplib.IMAP4_SSL(SERVER)
-    mail.login(EMAIL, PASSWORD)
+    mail = imaplib.IMAP4_SSL(server)
+    mail.login(email, pw)
 
     mail.select('inbox')
 
@@ -26,7 +22,7 @@ def get_mail(client, query):
 
     for i in mail_ids:
 
-        status, data = mail.fetch(i, '(RFC822)')
+        status, data = client.fetch(i, '(RFC822)')
         raw_email = email.message_from_bytes(data[0][1])
 
         mail_from = raw_email['from']
