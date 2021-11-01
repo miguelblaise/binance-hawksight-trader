@@ -12,7 +12,6 @@ def get_symbol_price(coin):
     for symbol in info:
         if symbol["symbol"] == coin:
             price = symbol["price"]
-            print(price)
             return float(price)
 
 def round_down(coin, number):
@@ -31,8 +30,8 @@ def buy_coins(pair):
     last_transaction = [transaction for transaction in transactions][-1]
 
     if last_transaction["isBuyer"]:
-        print(f"{pair}: last transaction was buy. Skip buy.")
-        return
+        message = f"{pair}: last transaction was buy. Skip buy."
+        return message
     
     quote_qty = float(last_transaction["quoteQty"])
 
@@ -41,7 +40,9 @@ def buy_coins(pair):
     order = client.order_market_buy(
         symbol=pair,
         quantity=order_qty)
-    return order
+
+    message = f"{pair}: {str(order)}"
+    return message
 
 
 def sell_coins(pair):
@@ -55,13 +56,15 @@ def sell_coins(pair):
 
     order_qty = round_down(pair, balance/price)
     if order_qty <= min_notional:
-        print(f"{pair}: Total qty less than min sell qty")
-        return
+        message = f"{pair}: Total qty less than min sell qty"
+        return message
 
     order = client.order_market_sell(
         symbol=pair,
         quantity=order_qty)
-    return order
+
+    message = f"{pair}: {str(order)}"
+    return message
 
 
 if __name__ == "__main__":

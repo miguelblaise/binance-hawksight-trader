@@ -6,17 +6,18 @@ from email.mime.text import MIMEText
 
 EMAIL = os.getenv("EMAIL")
 PASSWORD = os.getenv("PASSWORD")
+SENDER = 'auto-trader@test.com'
 
-def send_email(sender,
-    receivers,
+def send_email(receivers,
     subject,
     body,
+    sender=SENDER,
     email=EMAIL, 
     password=PASSWORD
     ):
 
     msg = MIMEMultipart('alternative')
-    msg['Subject'] = "Link"
+    msg['Subject'] = subject
     msg['From'] = email
     msg['To'] = ",".join(receivers)
 
@@ -30,7 +31,6 @@ def send_email(sender,
         server.sendmail(sender, receivers, msg.as_string())
 
 if __name__ == "__main__":
-    sender = 'auto-trader@test.com'
     receivers = [EMAIL]
     body = """<pre style='color:#000000;background:#ffffff;'>test</pre>"""
     subject = "test"
