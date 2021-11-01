@@ -47,7 +47,7 @@ def buy_sell():
     return messages
 
 def main():
-    receiver = ["***REMOVED***"]
+    receiver = [EMAIL]
     subject = "Hawksight Auto Trader"
     try:
         messages = buy_sell()
