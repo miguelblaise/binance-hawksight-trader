@@ -50,7 +50,6 @@ if __name__ == "__main__":
     mail = connect_inbox(EMAIL, PASSWORD, SERVER)
     mail_from, mail_subject, message = get_mail(mail, query)
 
-    
     # print(message)
     signals = parse_body(message)
     print(signals)
