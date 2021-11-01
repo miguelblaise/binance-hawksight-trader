@@ -15,10 +15,6 @@ def get_symbol_price(coin):
             print(price)
             return float(price)
 
-# def round_down(n, d=8):
-#     d = int('1' + ('0' * d))
-#     return floor(n * d) / d
-
 def round_down(coin, number):
     client = Client(API_KEY, SECRET_KEY)
     info = client.get_symbol_info(coin)
@@ -30,41 +26,41 @@ def round_down(coin, number):
 
 def buy_coins(pair):
     client = Client(API_KEY, SECRET_KEY)
-    price = get_symbol_price(client, pair)
+    price = get_symbol_price(pair)
     transactions = client.get_my_trades(symbol=pair)
     last_transaction = [transaction for transaction in transactions][-1]
 
-    if not last_transaction["isBuyer"]:
-        print(f"{pair}: last transaction was sell. Skip buy.")
+    if last_transaction["isBuyer"]:
+        print(f"{pair}: last transaction was buy. Skip buy.")
         return
     
-    quote_qty = last_sell_transaction["quoteQty"]
+    quote_qty = float(last_transaction["quoteQty"])
 
-    order_qty = round_down(client, coin, quote_qty/price)
+    order_qty = round_down(pair, quote_qty/price)
 
     order = client.order_market_buy(
         symbol=pair,
-        quantity=quantity)
+        quantity=order_qty)
     return order
 
 
 def sell_coins(pair):
     client = Client(API_KEY, SECRET_KEY)
-    price = get_symbol_price(client, pair)
-    balance = client.get_asset_balance(asset=pair.replace("USDT", ""))
+    price = get_symbol_price(pair)
+    balance = float(client.get_asset_balance(asset=pair.replace("USDT", ""))["free"])
 
-    info = client.get_symbol_info(coin)
+    info = client.get_symbol_info(pair)
     min_notional = [float(_['minNotional']) for _ in info['filters'] if _['filterType'] == 'MIN_NOTIONAL'][0]
     
 
-    order_qty = round_down(client, coin, balance/price)
+    order_qty = round_down(pair, balance/price)
     if order_qty <= min_notional:
         print(f"{pair}: Total qty less than min sell qty")
         return
 
     order = client.order_market_sell(
-        symbol=coin,
-        quantity=quantity)
+        symbol=pair,
+        quantity=order_qty)
     return order
 
 
@@ -89,5 +85,5 @@ if __name__ == "__main__":
     # trades = client.get_my_trades(symbol='XRPUSDT')
     # print(trades)
 
-    # balance = client.get_asset_balance(asset='XRP')
-    # print(balance)
+    balance = client.get_asset_balance(asset='XRP')
+    print(balance)

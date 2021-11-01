@@ -13,7 +13,8 @@ SERVER = os.getenv("SERVER")
 def main():
     today = datetime.today()
     # query = '(SUBJECT "Trading signals of Top 12 Cryptocurrency (daily) for Sunday 17 October 2021")'
-    query = f'(SUBJECT "Trading signals of Top 12 Cryptocurrency (daily) for {today.strftime("%A %d %B %Y")}")'
+    query = f'(SUBJECT "Trading signals of Top 12 Cryptocurrency (daily) for {today.strftime("%A %-d %B %Y")}")'
+    print(query)
 
     mail = connect_inbox(EMAIL, PASSWORD, SERVER)
     mail_from, mail_subject, message = get_mail(mail, query)
@@ -32,12 +33,13 @@ def main():
                 ]
         except KeyError:
             decision_signals[key] = []
-    orders = [] 
+
+    orders = []
     for pair in decision_signals["SELL Signals, profit-optimized:"]:
         order = sell_coins(pair)
         orders.append(order)
     
-    for pair in decision_signal["BUY Signals, profit-optimized:"]:
+    for pair in decision_signals["BUY Signals, profit-optimized:"]:
         order = buy_coins(pair)
         orders.append(order)
 
@@ -46,4 +48,3 @@ def main():
 if __name__ == "__main__":
     signals = main()
     print(signals)
-    # print(buy)
