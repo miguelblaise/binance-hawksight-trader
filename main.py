@@ -15,7 +15,7 @@ SERVER = os.getenv("SERVER")
 def buy_sell():
     today = datetime.today()
     # query = '(SUBJECT "Trading signals of Top 12 Cryptocurrency (daily) for Sunday 17 October 2021")'
-    query = f'(SUBJECT "Trading signals of Top 12 Cryptocurrency (daily) for {today.strftime("%A %-d %B %Y")}")'
+    query = f'(SUBJECT "Trading signals of Top 12 Cryptocurrency Tokens (daily) for {today.strftime("%A %-d %B %Y")}")'
 
     mail = connect_inbox(EMAIL, PASSWORD, SERVER)
     mail_from, mail_subject, message = get_mail(mail, query)
